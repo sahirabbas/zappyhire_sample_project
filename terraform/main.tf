@@ -23,27 +23,29 @@ resource "azurerm_resource_group" "zappyhire_rg" {
   location = "eastus"
 }
 
-resource "azurerm_container_group" "zappyhire_cgrp" {
+resource "azurerm_container_group" "container" {
   name                = "aci-zappyhire"
   location            = azurerm_resource_group.zappyhire_rg.location
   resource_group_name = azurerm_resource_group.zappyhire_rg.name
   ip_address_type     = "public"
+  os_type             = "Linux"
   dns_name_label      = "aci-zappyhire-dns"
 
   container {
-    name   = "mycontainer"
+    name   = "zappyhire-container"
     image  = "sahirabbask/workshop:${var.image_tag}"
     cpu    = "1.0"
     memory = "1.5"
+  }
 
-    registry_credential {
-      username      = var.docker_user
-      password      = var.docker_pass
-      server        = "index.docker.io"
-    }
+  registry_credential {
+    username      = var.docker_user
+    password      = var.docker_pass
+    server        = "index.docker.io"
   }
 }
 
+
 output "aci_dns" {
-  value = azurerm_container_group.zappyhire_cgrp.fqdn
+  value = azurerm_container_group.container.fqdn
 }
