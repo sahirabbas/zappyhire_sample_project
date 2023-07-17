@@ -36,12 +36,10 @@ resource "azurerm_container_group" "zappyhire_cgrp" {
     memory = "1.5"
   }
 
-  container_group_secrets {
-    registry_credentials {
-      username      = var.docker_user
-      password      = var.docker_pass
-      server        = "index.docker.io"
-    }
+  image_registry_credential {
+    server = "index.docker.io"
+    username = var.docker_user
+    password = var.docker_pass
   }
 }
 
