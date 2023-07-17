@@ -34,6 +34,10 @@ resource "azurerm_container_group" "zappyhire_cgrp" {
     image  = "sahirabbask/workshop:${var.image_tag}"
     cpu    = "1.0"
     memory = "1.5"
+    ports {
+      container_port = 80
+      protocol = "TCP"
+    }
   }
 
   image_registry_credential {
