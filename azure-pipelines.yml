@@ -8,18 +8,27 @@ trigger:
 
 pool:
   vmImage: ubuntu-latest
+variables:
+  - group: zappyhire-vars
 
 stages:
 - stage: DockerBuilAndPush
   jobs:
    - job: DockerBuilAndPush
      steps:
-     - task: Docker@2
+     #- task: Docker@2
+     #  inputs:
+     #   containerRegistry: 'sammas-docker-regiestry'
+     #   repository: 'workshop'
+     #   command: 'buildAndPush'
+     #   Dockerfile: '**/Dockerfile'
+     #   tags: 'zappyhire-$(Build.BuildId)'
+     - task: CmdLine@2
        inputs:
-        containerRegistry: 'sammas-docker-regiestry'
-        repository: 'workshop'
-        command: 'buildAndPush'
-        Dockerfile: '**/Dockerfile'
-        tags: 'zappyhire-$(Build.BuildId)'
+         script: |
+             docker build -t myapp .
+             docker login -u $(docker_user) -p $(docker_pass)
+             docker tag myapp $(docker_user)/workshop:zappyhire-$(Build.BuildId)
+             docker push $(docker_user)/workshop:zappyhire-$(Build.BuildId)
         
   
