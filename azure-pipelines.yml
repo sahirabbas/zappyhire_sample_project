@@ -36,7 +36,7 @@ stages:
        inputs:
          targetType: 'inline'
          script: |
-           cd cdn/
+           cd terraform/
            terraform init
      - task: Bash@3
        displayName: Terraform_Apply
