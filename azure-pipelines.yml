@@ -16,11 +16,7 @@ stages:
      steps:
      - task: Docker@2
        inputs:
-        containerRegistry: 'docker-workshop'
-        command: 'login'
-     - task: Docker@2
-       inputs:
-        containerRegistry: 'docker-workshop'
+        containerRegistry: 'sammas-docker-regiestry'
         repository: 'workshop'
         command: 'buildAndPush'
         Dockerfile: '**/Dockerfile'
