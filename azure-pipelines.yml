@@ -16,13 +16,6 @@ stages:
   jobs:
    - job: DockerBuilAndPush
      steps:
-     #- task: Docker@2
-     #  inputs:
-     #   containerRegistry: 'sammas-docker-regiestry'
-     #   repository: 'workshop'
-     #   command: 'buildAndPush'
-     #   Dockerfile: '**/Dockerfile'
-     #   tags: 'zappyhire-$(Build.BuildId)'
      - task: CmdLine@2
        inputs:
          script: |
@@ -30,5 +23,28 @@ stages:
              docker login -u $(docker_user) -p $(docker_pass)
              docker tag myapp $(docker_user)/workshop:zappyhire-$(Build.BuildId)
              docker push $(docker_user)/workshop:zappyhire-$(Build.BuildId)
+- stage: TerraformDeploy
+  jobs:
+   - job: TerraformDeploy
+     steps:
+     - task: TerraformInstaller@0
+       displayName: Terraform_install
+       inputs:
+         terraformVersion: 'latest' 
+     - task: Bash@3
+       displayName: Terraform_init
+       inputs:
+         targetType: 'inline'
+         script: |
+           cd cdn/
+           terraform init
+     - task: Bash@3
+       displayName: Terraform_Apply
+       inputs:
+         targetType: 'inline'
+         script: |
+           cd cdn/
+           terraform apply -var client_id=$(client_id) -var client_secret=$(client_secret) -var tenant_id=$(tenant_id) -var subscription_id=$(subscription_id) -var docker_user=$(docker_user) -var docker_pass=$(docker_pass) -var image_tag=zappyhire-$(Build.BuildId) -auto-approve
+
         
   
